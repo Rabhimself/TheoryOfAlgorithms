@@ -24,3 +24,7 @@
 
 ;considering looping over all different orders of the numbers and printing them
 ;then maybe change around the operations as an overall algorithm
+
+;loop over list, then loop over the cdr of that list, inside that loop loop over the cdr again, etc etc
+;inside that, use all operations using the same structure
+

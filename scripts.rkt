@@ -4,13 +4,16 @@
 (define ops (list + - / *))
 
 ;test target number
-(define tar 15)
+(define tar 100)
 ;defining test numbers
 (define a 5)
 (define b 10)
 (define c 15)
+(define d 20)
+(define e 25)
+(define f 50)
 ;defining a list for later
-(define lst (list a b c))
+(define lst (list a b c d e f))
 
 ;small check if the operation yields a match to the target
 ;(equal? ((car ops) a b) tar )
@@ -27,4 +30,12 @@
 
 ;loop over list, then loop over the cdr of that list, inside that loop loop over the cdr again, etc etc
 ;inside that, use all operations using the same structure
+(define temp null)
 
+; just pushing to a temp list, plan on using temp to build the different combinations of operations/numbers
+(define (doLoop lst)
+  (if ( = (length lst) 2)
+  (list* (car lst) (cons (cadr lst) temp))
+  (list* (car lst) (doLoop (cdr lst)))))
+
+(doLoop lst)

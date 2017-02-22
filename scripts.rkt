@@ -13,11 +13,14 @@
 (define lst (list a b c))
 
 ;small check if the operation yields a match to the target
-(equal? ((car ops) a b) tar )
+;(equal? ((car ops) a b) tar )
 
-;more building blocks, grabs the first operation in the ops list, and applies it to the
-;first item in the list argument with the second item in the list argument
-(define (doMath lst)
- ((car ops) (car lst) (car (cdr lst))))
+;Not sure if this is headed in the right direction, just applying an
+;operation to the whole list
+(define (applyOpToList op lst)
+  (if(null? (cdr lst))
+     (car lst)
+     (op (car lst)  (applyOpToList op (cdr lst)))))
 
-(doMath lst)
+;considering looping over all different orders of the numbers and printing them
+;then maybe change around the operations as an overall algorithm

@@ -2,7 +2,7 @@
 
 ;plan on using this list to interate through the different operations 
 (define ops (list + - / *))
-
+(define size 6)
 ;test target number
 (define tar 100)
 ;defining test numbers
@@ -45,11 +45,14 @@
 
 
 (define permus (permutations lst))
-;not sure if this is kosher, but leaving it for later just in case
-;it generates every single permutation of a lists elements w/o repeats
-;I still need to get every single permutation WITH repeats on the operations
-;then combine the two. Likely easier said than done...
-;Serious brute force stuff here
 
+;takes one item and gets all combinations with a list, pushes them to another list
+(define (pairup i lst bckt)
+  (if (null? (cdr lst))
+      bckt
+  (pairup i  (cdr lst) (cons (cons i (car lst)) bckt))))
+
+
+(pairup 5 lst temp)
 
 

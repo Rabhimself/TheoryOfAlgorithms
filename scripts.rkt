@@ -48,13 +48,14 @@
 
 ;takes one item and gets all combinations with a list, pushes them to another list
 (define (pairup i lst bckt)
-  (if (null? (cdr lst))
+  (if (null? lst)
       bckt
   (pairup i  (cdr lst) (cons (cons i (car lst)) bckt))))
 
 ;all gets all possible pairs of two lists
 (define (cart alst blst bckt)
-  (if (null? (cdr blst))
+  (if (null? blst)
       bckt
-      (cart (cdr alst) (cdr blst) (append (pairup (car alst)  blst '()) bckt))))
+      (cart (cdr alst) (cdr blst) (append (pairup (car alst)  (cdr blst) '()) bckt))))
 
+(cart lst lst temp)

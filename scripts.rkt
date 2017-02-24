@@ -52,7 +52,9 @@
       bckt
   (pairup i  (cdr lst) (cons (cons i (car lst)) bckt))))
 
-
-(pairup 5 lst temp)
-
+;all gets all possible pairs of two lists
+(define (cart alst blst bckt)
+  (if (null? (cdr blst))
+      bckt
+      (cart (cdr alst) (cdr blst) (append (pairup (car alst)  blst '()) bckt))))
 

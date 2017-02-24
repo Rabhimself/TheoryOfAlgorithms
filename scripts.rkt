@@ -50,7 +50,7 @@
 (define (pairup i lst bckt)
   (if (null? lst)
       bckt
-  (pairup i  (cdr lst) (cons (cons i (car lst)) bckt))))
+  (pairup i  (cdr lst) (cons (list i (car lst)) bckt))))
 
 ;all gets all possible pairs of two lists
 (define (cart alst blst bckt)

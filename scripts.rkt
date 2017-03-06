@@ -1,7 +1,7 @@
 #lang racket
 
 ;plan on using this list to interate through the different operations 
-(define ops (list + - / *))
+(define ops (list + + + + +))
 (define size 6)
 ;test target number
 (define tar 100)
@@ -58,4 +58,21 @@
       bckt
       (cart (cdr alst) (cdr blst) (append (pairup (car alst)  (cdr blst) '()) bckt))))
 
-(cart lst lst temp)
+
+;this is sort of what i want to do, but without all the index garbage. do this for every combination of every permutation would be overkill maybe, lots of redundancy and no accounting for the whole no negative numbers thing
+;not to mention the trouble division can/will cause
+(define (domath lst ops)
+ ((fifth ops) ((fourth ops) ((third ops) ((second ops) ((first ops) (first lst) (second lst)) (third lst)) (fourth lst)) (fifth lst)) (sixth lst)))
+
+
+
+(domath (car permus) ops)
+
+(define (filter lst out)
+  (if (null? (cdr lst))
+       out
+      (if ( > (length (car lst)) 1 )
+          (filter (cdr lst) (append out (list (car lst))))
+          (filter (cdr lst) out))))
+
+(define fl (filter (combinations (car permus)) temp))

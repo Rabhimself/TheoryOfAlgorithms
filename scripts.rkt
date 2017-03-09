@@ -1,7 +1,7 @@
 #lang racket
 
 ;plan on using this list to interate through the different operations 
-(define ops (list + + + + +))
+(define ops (list + - * /))
 (define size 6)
 ;test target number
 (define tar 100)
@@ -48,7 +48,7 @@
 
 ;takes one item and gets all combinations with a list, pushes them to another list
 (define (pairup i lst bckt)
-  (if (null? lst)
+  (if (null? lst) 
       bckt
   (pairup i  (cdr lst) (cons (list i (car lst)) bckt))))
 
@@ -61,13 +61,13 @@
 
 ;this is sort of what i want to do, but without all the index garbage. do this for every combination of every permutation would be overkill maybe, lots of redundancy and no accounting for the whole no negative numbers thing
 ;not to mention the trouble division can/will cause
-(define (domath lst ops)
- ((fifth ops) ((fourth ops) ((third ops) ((second ops) ((first ops) (first lst) (second lst)) (third lst)) (fourth lst)) (fifth lst)) (sixth lst)))
+;(define (domath lst ops)
+; ((fifth ops) ((fourth ops) ((third ops) ((second ops) ((first ops) (first lst) (second lst)) (third lst)) (fourth lst)) (fifth lst)) (sixth lst)))
 
 
+;(domath (car permus) ops)
 
-(domath (car permus) ops)
-
+;removes all list of size < 2
 (define (filter lst out)
   (if (null? (cdr lst))
        out
@@ -75,4 +75,17 @@
           (filter (cdr lst) (append out (list (car lst))))
           (filter (cdr lst) out))))
 
-(define fl (filter (combinations (car permus)) temp))
+;just testing filter against all the combinations in a permutation
+;(define fl (filter (combinations (car permus)) temp))
+
+;Need to generate a list of all the different combinations of operations
+
+  (define (buildops lst)
+           (append-map (lambda (lst)
+                (bopsaux lst)) lst))
+
+(define (bopsaux lst) (map (lambda (ops)
+                  (append lst (list ops))) ops))
+
+(define asdf (list (list +)(list -)(list *)(list /)))
+(buildops asdf )

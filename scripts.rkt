@@ -78,12 +78,17 @@
 ;just testing filter against all the combinations in a permutation
 ;(define fl (filter (combinations (car permus)) temp))
 
-;Need to generate a list of all the different combinations of operations
-
+;basically create all strings over an given alphabet of size 5.
+;this will create all possible combinations of all the operations i will need
+;This should work alongside some polish notation stuff later
   (define (buildops lst)
+    (if (equal? (length (last lst)) 5)
+        lst
+        (append lst
+        (buildops 
            (append-map (lambda (lst)
-                (bopsaux lst)) lst))
-
+                (bopsaux lst)) lst)))))
+ 
 (define (bopsaux lst) (map (lambda (ops)
                   (append lst (list ops))) ops))
 

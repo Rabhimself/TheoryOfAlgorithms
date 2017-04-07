@@ -1,7 +1,7 @@
 #lang racket
 
 ;plan on using this list to interate through the different operations 
-(define ops (list + - * /))
+(define ops (list (list +)(list -)(list *)(list /)))
 (define size 6)
 ;test target number
 (define tar 100)
@@ -14,6 +14,7 @@
 (define f 50)
 ;defining a list for later
 (define lst (list a b c d e f))
+(define stack '())
 
 ;small check if the operation yields a match to the target
 ;(equal? ((car ops) a b) tar )
@@ -44,7 +45,7 @@
   (list* a b temp))
 
 
-(define permus (permutations lst))
+;(define permus (permutations lst))
 
 ;takes one item and gets all combinations with a list, pushes them to another list
 (define (pairup i lst bckt)
@@ -92,5 +93,42 @@
 (define (bopsaux lst) (map (lambda (ops)
                   (append lst (list ops))) ops))
 
-(define asdf (list (list +)(list -)(list *)(list /)))
-(buildops asdf )
+(define 3ops (cartesian-product ops ops ops))
+
+
+;(define (wannabeRPN ops)
+;  (if (null? cdr ops)
+;      ()
+;      ())
+;     (if (procedure? (car ops))
+;         ((car ops) (car stack)(cadr stack))
+;         ((cons  stack (car ops)))
+
+
+;ians code from lab, -1 is a placeholder for operator and 1 is for operands
+(define op-perms (remove-duplicates (permutations  (list -1 -1 -1 -1 1 1 1 1 1))))
+
+(define (make-rpn l)
+  (append (list 1 1) l (list -1)))
+
+
+;(map make-rpn X)
+
+;write function to determine if a list is a valid rpn list
+;e= element s = stack
+(define (valid-rpn? e [s 0])
+  (if (null? e)
+      (if (= s 1)
+          #t #f)
+      (if (= (car e) 1)
+          (valid-rpn? (cdr e) (+ 1 s))
+          (valid-rpn? (cdr e) (- 1 s))
+      ))) ;if this returns true, push the e to a list for computation later
+(define (build-ops-tmplt in out)
+  ;if car of in is null return out
+  (if (null? in) out (if (valid-rpn? (car in))
+      (build-ops-tmplt (cdr in) (cons (append (append (list 1 1) (car in)) (list -1)) out))
+      (build-ops-tmplt (cdr in) out)))
+  )
+
+(define valid-op-perms (build-ops-tmplt op-perms '()))

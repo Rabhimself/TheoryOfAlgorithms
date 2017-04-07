@@ -106,7 +106,7 @@
 
 
 ;ians code from lab, -1 is a placeholder for operator and 1 is for operands
-(define op-perms (remove-duplicates (permutations  (list -1 -1 -1 -1 1 1 1 1 1))))
+(define op-perms (remove-duplicates (permutations  (list -1 -1 -1 -1 1 1 1 1 ))))
 
 (define (make-rpn l)
   (append (list 1 1) l (list -1)))
@@ -131,4 +131,20 @@
       (build-ops-tmplt (cdr in) out)))
   )
 
+;can either get all elements on the operations list based on size, or just rework the cartesian
+;product code to build a list of all the lists at indexes based on their size
+;then just grab elements from the index of (length lst)
+(define (get-by-len lst len out)
+  (map (lambda lst len out
+         (cond [(eq? (length lst) len) (cons lst out)]))
+       lst))
 (define valid-op-perms (build-ops-tmplt op-perms '()))
+
+;(define (find-sols nums ops tmplts)
+;  (map (lambda (ops tmplts)
+;    ()) nums))
+
+;for each element in the combinations of permutations
+   ;for each list of operations of length n
+       ;for each template of valid rpns
+           ;evaluate, if == push to a list for later

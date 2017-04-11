@@ -126,8 +126,8 @@
       ))) ;if this returns true, push the e to a list for computation later
 (define (build-ops-tmplt in out)
   ;if car of in is null return out
-  (if (null? in) out (if (valid-rpn? (car in))
-      (build-ops-tmplt (cdr in) (cons (append (append (list 1 1) (car in)) (list -1)) out))
+  (if (null? in) out (if (valid-rpn? (make-rpn(car in)))
+      (build-ops-tmplt (cdr in) (cons (make-rpn (car in)) out))
       (build-ops-tmplt (cdr in) out)))
   )
 

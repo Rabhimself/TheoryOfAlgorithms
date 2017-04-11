@@ -106,13 +106,9 @@
 
 
 ;ians code from lab, -1 is a placeholder for operator and 1 is for operands
-(define op-perms (remove-duplicates (permutations  (list -1 -1 -1 -1 1 1 1 1 ))))
-
 (define (make-rpn l)
   (append (list 1 1) l (list -1)))
-
-
-;(map make-rpn X)
+(define op-perms (map make-rpn (remove-duplicates (permutations  (list -1 -1 -1 -1 1 1 1 1 )))))
 
 ;write function to determine if a list is a valid rpn list
 ;e= element s = stack
@@ -126,8 +122,8 @@
       ))) ;if this returns true, push the e to a list for computation later
 (define (build-ops-tmplt in out)
   ;if car of in is null return out
-  (if (null? in) out (if (valid-rpn? (make-rpn(car in)))
-      (build-ops-tmplt (cdr in) (cons (make-rpn (car in)) out))
+  (if (null? in) out (if (valid-rpn? (car in))
+      (build-ops-tmplt (cdr in) (cons  (car in) out))
       (build-ops-tmplt (cdr in) out)))
   )
 

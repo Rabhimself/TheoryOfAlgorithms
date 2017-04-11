@@ -89,24 +89,34 @@
           (valid-rpn? (cdr e) (- 1 s))
       ))) ;if this returns true, push the e to a list for computation later
 
+(define (dolist nums [ops (list-ref opslist (- (length nums) 2))] [out '()])
+;get all ops and call aux then call makerpn
+  (if (null? ops) out
+      (dolist nums (cdr ops) (aux nums (car ops) out)))
+)
+(define (aux nums ops [out '()] [templt (list-ref templt-permus (- (length(car permus)) 2))] )
+    (if (null? templt) out
+    (aux nums ops (append out (make-rpn nums ops (car templt))) (cdr templt) )))
 ;takes a list of numbers, a list of operators, and a valid rpn template and combines them
-(define (make-rpn templt ops nums [out '()])
+   
+(define (make-rpn nums ops templt [out '()]) 
    (if (null? templt)
       out
       (if (= (car templt) 1)
-          (make-rpn (cdr templt) ops (cdr nums) (append out (list(car nums))))
-          (make-rpn (cdr templt) (cdr ops) nums (append out (car ops)))
+          (make-rpn (cdr nums) ops (cdr templt) (append out (list(car nums))))
+          (make-rpn nums (cdr ops)  (cdr templt)  (append out (list(car ops))))
       )))
 
 ;evaluates an rpn list, also checks at every step in the evaluation for fractions and negative numbers, albeit in a VERY longwinded way
 (define (eval-rpn in [stack '()])
   (if (null? in)
       stack
-      (if (procedure? (car in))          
-          (if (or (negative? (apply (car in) (list(car stack) (cadr stack))))(integer? (apply (car in) (list(car stack) (cadr stack)))))#f
-          (eval-rpn (cdr in) (cons (apply (car in) (list(car stack) (cadr stack))) (cddr stack))))
-      (eval-rpn (cdr in) (cons (car in) stack))
-      )))
+      (if (list? (car in))          
+          (if (or (negative? (apply (caar in) (list(car stack) (cadr stack))))(not (integer? (apply (caar in) (list(car stack) (cadr stack))))))
+              #f
+          (eval-rpn (cdr in) (cons (apply (car(car in)) (list(car stack) (cadr stack))) (cddr stack))))
+      (eval-rpn (cdr in) (cons (car in) stack)))
+      ))
 (define (build-ops-tmplt in [out '()])
   ;if car of in is null return out
   (if (null? in) out (if (valid-rpn? (car in))

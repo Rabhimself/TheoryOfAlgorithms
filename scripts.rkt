@@ -85,8 +85,10 @@
       (if (= s 1)
           #t #f)
       (if (= (car e) 1)
-          (valid-rpn? (cdr e) (+ 1 s))
-          (valid-rpn? (cdr e) (- 1 s))
+          (valid-rpn? (cdr e) (+ s 1))
+          (if (= (- s 1) 0)
+              #f
+          (valid-rpn? (cdr e) (- s 1)))
       ))) ;if this returns true, push the e to a list for computation later
 
 (define (dolist nums [ops (list-ref opslist (- (length nums) 2))] [out '()])
@@ -94,9 +96,9 @@
   (if (null? ops) out
       (dolist nums (cdr ops) (aux nums (car ops) out)))
 )
-(define (aux nums ops [out '()] [templt (list-ref templt-permus (- (length(car permus)) 2))] )
+(define (aux nums ops [out '()] [templt (list-ref valid-op-perms (- (length nums) 2))] )
     (if (null? templt) out
-    (aux nums ops (append out (make-rpn nums ops (car templt))) (cdr templt) )))
+    (aux nums ops (append out (list(make-rpn nums ops (car templt)))) (cdr templt) )))
 ;takes a list of numbers, a list of operators, and a valid rpn template and combines them
    
 (define (make-rpn nums ops templt [out '()]) 
@@ -111,10 +113,12 @@
 (define (eval-rpn in [stack '()])
   (if (null? in)
       stack
-      (if (list? (car in))          
-          (if (or (negative? (apply (caar in) (list(car stack) (cadr stack))))(not (integer? (apply (caar in) (list(car stack) (cadr stack))))))
+      (if (list? (car in))
+          (if (and (eq? / (caar in)) (= (cadr stack) 0))
               #f
-          (eval-rpn (cdr in) (cons (apply (car(car in)) (list(car stack) (cadr stack))) (cddr stack))))
+              (if (or (negative? (apply (caar in) (list(car stack) (cadr stack))))(not (integer? (apply (caar in) (list(car stack) (cadr stack))))))
+                  #f
+              (eval-rpn (cdr in) (cons (apply (car(car in)) (list(car stack) (cadr stack))) (cddr stack)))))
       (eval-rpn (cdr in) (cons (car in) stack)))
       ))
 (define (build-ops-tmplt in [out '()])
@@ -131,7 +135,7 @@
   (map (lambda lst len out
          (cond [(eq? (length lst) len) (cons lst out)]))
        lst))
-(define valid-op-perms (cons (list 1 1 -1) (map build-ops-tmplt templt-permus)))
+(define valid-op-perms (map build-ops-tmplt templt-permus))
 
 ;test stack for later
 ;(make-rpn (car valid-op-perms) (list (list +) (list -) (list +) (list *) (list -)) (last permus))
@@ -146,7 +150,9 @@
           ;evaluate, if == push to a list for later
 
 
-
+;fix valid-rpnp
+; (define ohmy (aux (last permus) (seventh (list-ref opslist (- (length (last permus)) 2)))))
+; (map eval-rpn omy)
 
 
 

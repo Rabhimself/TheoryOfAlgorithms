@@ -45,7 +45,7 @@
   (list* a b temp))
 
 
-;(define permus (permutations lst))
+(define permus (permutations lst))
 
 ;takes one item and gets all combinations with a list, pushes them to another list
 (define (pairup i lst bckt)
@@ -93,22 +93,13 @@
 (define (bopsaux lst) (map (lambda (ops)
                   (append lst (list ops))) ops))
 
-(define 3ops (cartesian-product ops ops ops))
-
-
-;(define (wannabeRPN ops)
-;  (if (null? cdr ops)
-;      ()
-;      ())
-;     (if (procedure? (car ops))
-;         ((car ops) (car stack)(cadr stack))
-;         ((cons  stack (car ops)))
+(define 5ops (cartesian-product ops ops ops ops ops))
 
 
 ;ians code from lab, -1 is a placeholder for operator and 1 is for operands
-(define (make-rpn l)
+(define (append-rpn l)
   (append (list 1 1) l (list -1)))
-(define op-perms (map make-rpn (remove-duplicates (permutations  (list -1 -1 -1 -1 1 1 1 1 )))))
+(define op-perms (map append-rpn (remove-duplicates (permutations  (list -1 -1 -1 -1 1 1 1 1 )))))
 
 ;write function to determine if a list is a valid rpn list
 ;e= element s = stack
@@ -120,6 +111,20 @@
           (valid-rpn? (cdr e) (+ 1 s))
           (valid-rpn? (cdr e) (- 1 s))
       ))) ;if this returns true, push the e to a list for computation later
+(define (make-rpn templt ops nums [out '()])
+   (if (null? templt)
+      out
+      (if (= (car templt) 1)
+          (make-rpn (cdr templt) ops (cdr nums) (append out (list(car nums))))
+          (make-rpn (cdr templt) (cdr ops) nums (append out (car ops)))
+      )))
+(define (eval-rpn in [stack '()])
+  (if (null? in)
+      stack
+      (if (procedure? (car in))
+          (eval-rpn (cdr in) (cons (apply (car in) (list(car stack) (cadr stack))) (cddr stack)))
+          (eval-rpn (cdr in) (cons (car in) stack))
+      )))
 (define (build-ops-tmplt in out)
   ;if car of in is null return out
   (if (null? in) out (if (valid-rpn? (car in))
@@ -136,6 +141,9 @@
        lst))
 (define valid-op-perms (build-ops-tmplt op-perms '()))
 
+;test stack for later
+(make-rpn (car valid-op-perms) (list (list +) (list -) (list +) (list *) (list -)) (last permus))
+
 ;(define (find-sols nums ops tmplts)
 ;  (map (lambda (ops tmplts)
 ;    ()) nums))
@@ -144,3 +152,4 @@
    ;for each list of operations of length n
        ;for each template of valid rpns
            ;evaluate, if == push to a list for later
+

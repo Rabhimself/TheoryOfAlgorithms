@@ -56,11 +56,15 @@ The basic algorithm of the script is as follows:
 
 
 
-### There are a few run time complexities to consider
+## Complexities to consider
+
+#### Racket documentation was written by engineers
+Not humans. Reading it violates the [Convention against Torture and Other Cruel, Inhuman or Degrading Treatment or Punishment](https://en.wikipedia.org/wiki/United_Nations_Convention_against_Torture).
 
 #### When given eleven elements, there are 11! or 39,916,800 total possible permutations
 The script itself uses a brute force approach to finding all of the solutions to the problem. It must find every possible equation that can be made using the six numbers and 5 operators given. To make things easier, it generates every valid permutation of the numbers and operators. This is done by using templates of valid orderings (eg (# # O # O # O # # O O)), the template determines which stack (numbers and operators) it grabs its next element from. Then, by using [Reverse Polish Notation](https://en.wikipedia.org/wiki/Reverse_Polish_notation)(RPN), or Postfix notation, they can be evaluated.
 
-There is a very important requirement that drastically lessens the number of permutations. At a minimum, there must be two numbers and an operator in order to...  well, do math. Short of any theoretical insanity, at least. Which means the script only needs to generate permutations of eight elements. That brings the total number of permutations down to 40,320. Which is a pretty significant difference, obviously. Without this, the space complexity quickly gets out of hand.
+There is a very important requirement that drastically lessens the number of permutations. At a minimum, there must be two numbers and an operator in order to...  well, do math. Short of any theoretical insanity, at least. Which means the script only needs to generate permutations of eight elements. That brings the total number of permutations down to 40,320. Which is a pretty significant difference, obviously. Without this, the space complexity quickly gets out of hand and DrRacket starts begging for more memory. If you're running Windows, you're probably already short on it as it is.
 
-
+#### Running time
+Largley due to unfamiliarity with Racket itself, this script has a larger than desired running time. While it was possible to map the bulk of the work to each permutation of numbers; mapping the templates, numbers, and operators to a function proved difficult to do given the way the script was written step by step. Given more time, refactoring for more parallel processing would be nice. That however would require a much better understanding of Racket/Scheme, but that requires reading Racket documentation, I would rather be water boarded, thank you.

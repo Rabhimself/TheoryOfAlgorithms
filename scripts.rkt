@@ -1,9 +1,5 @@
 #lang racket
 
-
-
-;test target number
-(define tar '())
 (define permus '())
 
 ;plan on using this list to interate through the different operations 
@@ -26,6 +22,10 @@
 ;                  (append lst (list ops))) ops))
 
 ;appends the the numbers and an operator to the front and end of the list, respectively.
+;since every valid rpn template begins with 2 numbers and ends with an operator
+
+;this also reduces the overal number of perumations that must be generated and filtered of duplicates
+;
 (define (append-rpn l)
   (append (list 1 1) l (list -1)))
 (define templt-permus
@@ -74,13 +74,14 @@
   (if (null? in)
       (car stack)
       (if (procedure? (car in))
-          (if (and (eq? / (car in)) (= (cadr stack) 0))
+          (if (and (eq? / (car in)) (= (car stack) 0))
               #f
-              (if (or (negative? (apply (car in) (list(car stack) (cadr stack))))(not (integer? (apply (car in) (list(car stack) (cadr stack))))))
+              (if (or (negative? (apply (car in) (list(cadr stack) (car stack))))(not (integer? (apply (car in) (list(cadr stack) (car stack))))))
                   #f
-              (eval-rpn (cdr in) (cons (apply (car in) (list(car stack) (cadr stack))) (cddr stack)))))
+              (eval-rpn (cdr in) (cons (apply (car in) (list(cadr stack) (car stack))) (cddr stack)))))
       (eval-rpn (cdr in) (cons (car in) stack)))
       ))
+
 
 (define (build-ops-tmplt in [out '()])
   ;if car of in is null return out
@@ -102,22 +103,39 @@
 (define (find-sols nums [ops (list-ref opslist (- (length nums) 2))] [out '()])
 ;get all ops and call aux then call makerpn
   (if (null? ops) out
-      (find-sols nums (cdr ops) (aux nums (car ops) out)))
+      (find-sols nums (cdr ops) (aux nums (flatten(car ops)) out)))
 )
+
+;does the heavy lifting by taking a list of numbers, a list of operators, and then loops through the various
+;rpn templates of size n, evaluates them, and if they match the target number, pushes them to a list that gets returned
 (define (aux nums ops [out '()] [templt (list-ref valid-op-perms (- (length nums) 2))] )
     (if (null? templt) out
         (if (eq? tar (eval-rpn (make-rpn nums ops (car templt))))
             (aux nums ops (append out (list(make-rpn nums ops (car templt)))) (cdr templt) )
             (aux nums ops out (cdr templt)))))
 
-(define (countdown nums target)
+;this just takes the rpn list and formats it like the project specification does
+;I just couldnt get the procedures to print out a simple name for the life of me
+;However, you can map eval to all of them and racket just goes with it, which is handy
+(define (final-format rpn [stack '()])
+  (if (null? rpn)
+      (car stack)
+      (if (procedure? (first rpn))
+          (final-format (cdr rpn) (append(list(list (car rpn) (cadr stack) (car stack))) (cddr stack))) 
+          (final-format (cdr rpn) (append (list(car rpn)) stack) ))
+          ))
+
+;The entry point, it sets the target and builds all unique combinations of permutations of the number set given
+;then filters out any with less than 2 numbers, since 100 isnt a valid target number in this version
+(define (solvecount target nums)
   (set! tar target)
   (set! permus (twofilter(build-num-list (permutations nums))))
-  (remove '()(remove-duplicates (map find-sols permus))))
-;test stack for later
-;(make-rpn (car valid-op-perms) (list (list +) (list -) (list +) (list *) (list -)) (last permus))
+  (map final-format (remove '()(remove-duplicates (append-map find-sols permus)))))
 
-;for each element in the combinations of permutations
+;the basic algorithm goes like this
+;map to each combination of permutations:
    ;for each list of operations of length n
        ;for each template of valid rpns
           ;evaluate, if == push to a list for later
+;remove duplicates from the list
+;map the format function to every rpn answer and spit it out on screen

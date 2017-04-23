@@ -1,7 +1,7 @@
 #lang racket
 
 (define permus '())
-
+(define tar '())
 ;plan on using this list to interate through the different operations 
 (define ops (list (list +)(list -)(list *)(list /)))
 

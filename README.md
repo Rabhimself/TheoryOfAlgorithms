@@ -54,7 +54,11 @@ The basic algorithm of the script is as follows:
         - If the final evaluation is equal to the target number return the list eg: ( 5 10 + 100 * )
 - Format the list of solutions and return them
 
+## Overview of how it works
 
+The entry point for the script is the solvecount function. It is passed the target number and the list of numbers to work with. Then it sets a global variable that stores the target (tar) and generates every combination of every permutation of the numbers, less any duplicates. Before any of this is done though, the cartesian products of the operators for each valid length (2-5) and the RPN templates are made and validated.
+
+It then calls find-sols on the permutations using append-map, the results of that will have duplicates removed, then they will be formatted for an easier read. The find-sols function will take the length of the list it is passed (these are the numbers), and get the appropriate list of operator permutations using the length as an index accessor. Each operator list is paired with the number list by the aux function and passed to the make-rpn function. The make-rpn function passes those pairs to each valid RPN template, and an RPN list is made. The next step is to use eval-rpn to evaluate each potentional solution step by step to ensure no fractions or negative numbers are produced at any step. If the whole equation is valid, it is checked against the target number, and if it matches, it is returned in a list.
 
 ## Complexities to consider
 
